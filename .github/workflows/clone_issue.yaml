@@ -1,0 +1,23 @@
+name: Clone Issue to Repositories
+
+on:
+    issues:
+        types: [labeled]
+
+jobs:
+  clone-issue:
+    runs-on: ubuntu-latest
+    permissions: write-all
+
+    steps:
+      - name: Clone issue to labeled repository
+        run: |
+          gh api \
+          --method POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "X-GitHub-Api-Version: 2022-11-28" \
+          /repos/wwi21seb-projekt/${{ github.event.label.name }}/issues \
+          -f title='${{ github.event.issue.title }}' \
+          -f body='${{ github.event.issue.body }}'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACTION_PAT }}
